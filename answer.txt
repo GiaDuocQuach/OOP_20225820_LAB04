@@ -1,0 +1,40 @@
+10.
+Khi ghi đè phương thức equals() của lớp Object, nếu bạn cần ép kiểu tham số obj sang một kiểu cụ thể như Media để so sánh các thuộc tính, hãy đảm bảo kiểm tra trước xem đối tượng obj có phải là một thể hiện (instance) của lớp Media hay không.
+
+Nếu obj không phải là một thể hiện của Media (ví dụ: không thuộc lớp Media hoặc bất kỳ lớp con nào của nó), việc ép kiểu sẽ dẫn đến lỗi thời gian chạy (ClassCastException). Để tránh lỗi này, bạn có thể sử dụng toán tử instanceof trước khi thực hiện ép kiểu
+
+12.
+1)
+Xây dựng một lớp đại diện cho các đối tượng cần sắp xếp, ví dụ như lớp mô tả các mục trong giỏ hàng.
+
+2)
+- MediaComparatorByTitleCost:
+public int compare(Media m1, Media m2) {
+        // So sánh theo tiêu đề
+        int titleComparison = m1.getTitle().compareTo(m2.getTitle());
+        
+        // Nếu tiêu đề giống nhau, so sánh theo chi phí (chi phí cao hơn ưu tiên trước)
+        if (titleComparison == 0) {
+            return Float.compare(m2.getCost(), m1.getCost());  // So sánh theo chi phí giảm dần
+        }
+        
+        return titleComparison;  // Nếu tiêu đề khác nhau, sắp xếp theo tiêu đề
+    }
+-MediaComparatorByCostTitle:
+public int compare(Media m1, Media m2) {
+        // So sánh theo chi phí (chi phí cao hơn ưu tiên trước)
+        int costComparison = Float.compare(m2.getCost(), m1.getCost());
+        
+        // Nếu chi phí giống nhau, so sánh theo tiêu đề
+        if (costComparison == 0) {
+            return m1.getTitle().compareTo(m2.getTitle());  // So sánh theo tiêu đề (theo thứ tự chữ cái)
+        }
+        
+        return costComparison;  // Nếu chi phí khác nhau, sắp xếp theo chi phí
+    }
+
+3)
+-Lớp chỉ có thể triển khai một phương thức compareTo() từ giao diện Comparable, vì vậy chỉ một quy tắc sắp xếp mặc định được áp dụng.
+-Để sắp xếp theo nhiều tiêu chí khác nhau, bạn cần sử dụng Comparator. Điều này mang lại sự linh hoạt khi định nghĩa nhiều quy tắc sắp xếp.
+
+4) Sử dụng Comparator cho phép bạn dễ dàng áp dụng các quy tắc sắp xếp khác nhau đối với từng loại phương tiện, mà không cần thay đổi logic mặc định của lớp thông qua Comparable.
